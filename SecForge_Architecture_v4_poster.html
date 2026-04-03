@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecForge v4.0 Poster Mode</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --bg:#020612;
+      --bg2:#07101f;
+      --bg3:#0a1730;
+      --text:#edf6ff;
+      --muted:#8ca3c7;
+      --line:rgba(121,174,255,.16);
+      --glass:rgba(9,18,36,.58);
+      --glass-2:rgba(12,22,42,.76);
+      --cyan:#2ee6ff;
+      --blue:#63a9ff;
+      --violet:#9270ff;
+      --pink:#ff59ae;
+      --green:#34f0b2;
+      --amber:#ffd06e;
+      --white:#ffffff;
+    }
+
+    html,body{min-height:100%}
+    body{
+      font-family:'Noto Sans TC','JetBrains Mono',sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 12%, rgba(46,230,255,.18), transparent 18%),
+        radial-gradient(circle at 88% 14%, rgba(146,112,255,.18), transparent 18%),
+        radial-gradient(circle at 76% 72%, rgba(255,89,174,.10), transparent 20%),
+        linear-gradient(180deg,var(--bg),var(--bg2) 42%,var(--bg3));
+      overflow-x:hidden;
+      padding:22px;
+      position:relative;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(rgba(112,168,255,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(112,168,255,.045) 1px, transparent 1px);
+      background-size:38px 38px;
+      mask-image:radial-gradient(circle at center, black 50%, transparent 95%);
+      opacity:.32;
+    }
+
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(transparent 0%, rgba(255,255,255,.018) 49%, transparent 50%, rgba(255,255,255,.018) 51%, transparent 100%);
+      background-size:100% 7px;
+      opacity:.08;
+      mix-blend-mode:screen;
+    }
+
+    .wrap{
+      max-width:1550px;
+      margin:0 auto;
+      position:relative;
+      z-index:2;
+    }
+
+    /* ===================
+       HERO / POSTER
+       =================== */
+    .poster{
+      position:relative;
+      overflow:hidden;
+      min-height:400px;
+      border-radius:34px;
+      border:1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.018)),
+        var(--glass);
+      backdrop-filter:blur(14px);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.02),
+        0 22px 60px rgba(0,0,0,.34),
+        0 0 26px rgba(46,230,255,.05);
+      margin-bottom:20px;
+      padding:34px 34px 30px;
+    }
+
+    .poster::before{
+      content:"";
+      position:absolute;
+      left:-100px;
+      top:-120px;
+      width:360px;
+      height:360px;
+      background:radial-gradient(circle, rgba(46,230,255,.22), transparent 68%);
+      filter:blur(10px);
+    }
+
+    .poster::after{
+      content:"";
+      position:absolute;
+      right:-120px;
+      bottom:-130px;
+      width:380px;
+      height:380px;
+      background:radial-gradient(circle, rgba(146,112,255,.20), transparent 68%);
+      filter:blur(14px);
+    }
+
+    .poster-grid{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns: 1.25fr .9fr;
+      gap:24px;
+      align-items:start;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:9px 13px;
+      border-radius:999px;
+      border:1px solid rgba(46,230,255,.20);
+      background:rgba(255,255,255,.04);
+      color:var(--cyan);
+      font-family:'Orbitron',sans-serif;
+      font-size:.72rem;
+      letter-spacing:2.8px;
+      text-transform:uppercase;
+      text-shadow:0 0 12px rgba(46,230,255,.25);
+      margin-bottom:16px;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:8px;height:8px;border-radius:50%;
+      background:var(--cyan);
+      box-shadow:0 0 12px rgba(46,230,255,.65);
+    }
+
+    .title{
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:clamp(2rem,5vw,4rem);
+      line-height:1;
+      letter-spacing:2px;
+      font-weight:900;
+      margin-bottom:14px;
+      background:linear-gradient(135deg,#96f9ff 0%,#82bfff 30%,#c4a9ff 64%,#ff9ad0 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      max-width:760px;
+    }
+
+    .lede{
+      max-width:760px;
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.9;
+      margin-bottom:18px;
+    }
+
+    .lede strong{color:#eefbff}
+
+    .signal-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:22px;
+    }
+
+    .signal{
+      padding:10px 13px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.045);
+      color:#ddf2ff;
+      font-size:.72rem;
+      font-family:'JetBrains Mono',monospace;
+      letter-spacing:.2px;
+    }
+
+    .hero-asym{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+      align-items:stretch;
+    }
+
+    .angle-card{
+      position:relative;
+      overflow:hidden;
+      padding:18px 18px 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+      min-height:146px;
+      clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    }
+
+    .angle-card.small{
+      min-height:146px;
+      transform:translateY(24px);
+    }
+
+    .angle-card::after{
+      content:"";
+      position:absolute;
+      right:-24px;bottom:-24px;
+      width:100px;height:100px;
+      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 72%);
+      opacity:.18;
+    }
+
+    .angle-k{
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:.76rem;
+      letter-spacing:1.7px;
+      text-transform:uppercase;
+      margin-bottom:8px;
+      color:#f8fbff;
+    }
+
+    .angle-v{
+      color:var(--muted);
+      font-size:.77rem;
+      line-height:1.65;
+    }
+
+    .poster-side{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .diag-panel{
+      position:relative;
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+      padding:18px 18px 16px;
+      border-radius:24px;
+      overflow:hidden;
+    }
+
+    .diag-panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg, rgba(255,255,255,.03), transparent 30%, transparent 70%, rgba(255,255,255,.02));
+      pointer-events:none;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .stat{
+      position:relative;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      border-radius:18px;
+      padding:14px;
+      min-height:92px;
+      overflow:hidden;
+    }
+
+    .stat::after{
+      content:"";
+      position:absolute;
+      inset:auto -22px -22px auto;
+      width:84px;height:84px;
+      background:radial-gradient(circle, rgba(255,255,255,.09), transparent 72%);
+      opacity:.18;
+    }
+
+    .stat .num{
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:1.4rem;
+      color:#fff;
+      margin-bottom:6px;
+    }
+
+    .stat .cap{
+      color:var(--muted);
+      font-size:.72rem;
+      line-height:1.5;
+    }
+
+    .diag-title{
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:.82rem;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+      color:#a7eaff;
+      margin-bottom:12px;
+    }
+
+    .side-list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      color:var(--muted);
+      font-size:.74rem;
+      line-height:1.55;
+    }
+
+    .side-item{
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+    }
+
+    .side-dot{
+      width:6px;height:6px;border-radius:50%;
+      margin-top:7px;
+      background:var(--cyan);
+      box-shadow:0 0 8px rgba(46,230,255,.6);
+      flex-shrink:0;
+    }
+
+    /* ===================
+       ARCHITECTURE FLOW
+       =================== */
+    .architecture{
+      display:grid;
+      grid-template-columns: 250px 1fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .rail{
+      position:sticky;
+      top:16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .rail-card{
+      border:1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.018)),
+        var(--glass);
+      backdrop-filter:blur(10px);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 14px 32px rgba(0,0,0,.24);
+    }
+
+    .rail-title{
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:.8rem;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+      margin-bottom:12px;
+      color:#a7eaff;
+    }
+
+    .rail-steps{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .rail-step{
+      position:relative;
+      padding:11px 12px 11px 16px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.07);
+      font-size:.73rem;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .rail-step b{
+      color:#edf6ff;
+      display:block;
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:.7rem;
+      letter-spacing:1px;
+      margin-bottom:4px;
+      text-transform:uppercase;
+    }
+
+    .rail-step::before{
+      content:"";
+      position:absolute;
+      left:0;top:10px;bottom:10px;
+      width:3px;border-radius:999px;
+      background:linear-gradient(180deg,var(--cyan),var(--violet));
+    }
+
+    .main{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .group{
+      position:relative;
+      padding:18px;
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.07);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.014));
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+      overflow:hidden;
+    }
+
+    .group::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), transparent 25%, transparent 75%, rgba(255,255,255,.02));
+    }
+
+    .group-head{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+      align-items:end;
+      margin-bottom:14px;
+      padding:0 4px;
+    }
+
+    .group-title{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:.84rem;
+      letter-spacing:1.9px;
+      text-transform:uppercase;
+      color:#e4f1ff;
+    }
+
+    .group-icon{
+      width:12px;height:12px;border-radius:50%;
+      box-shadow:0 0 10px currentColor;
+      flex-shrink:0;
+    }
+
+    .group-desc{
+      color:var(--muted);
+      font-size:.72rem;
+      font-family:'JetBrains Mono',monospace;
+      text-align:right;
+    }
+
+    .flow{
+      position:relative;
+      z-index:2;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .connector{
+      display:flex;
+      justify-content:center;
+      height:18px;
+      position:relative;
+    }
+
+    .connector::before{
+      content:"";
+      width:2px;height:18px;border-radius:999px;
+      background:linear-gradient(180deg, rgba(99,169,255,0), rgba(99,169,255,.7), rgba(99,169,255,0));
+    }
+
+    .layer{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid var(--line);
+      padding:16px 18px 18px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+        var(--glass-2);
+      backdrop-filter:blur(10px);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.02),
+        0 16px 38px rgba(0,0,0,.24);
+    }
+
+    .layer::before{
+      content:"";
+      position:absolute;
+      left:0;top:0;bottom:0;
+      width:4px;
+    }
+
+    .layer::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent 22%, transparent 78%, rgba(255,255,255,.02));
+      pointer-events:none;
+    }
+
+    .layer-head{
+      position:relative;
+      z-index:2;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .layer-title{
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:.93rem;
+      font-weight:800;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+    }
+
+    .layer-sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.72rem;
+      font-family:'JetBrains Mono',monospace;
+    }
+
+    .tag{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      border-radius:999px;
+      padding:5px 10px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:.63rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .nodes{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+
+    .node{
+      position:relative;
+      min-height:105px;
+      padding:12px 12px 10px;
+      border-radius:18px;
+      border:1px solid rgba(120,170,255,.11);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+      overflow:hidden;
+      transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+    }
+
+    .node:hover{
+      transform:translateY(-3px);
+      border-color:rgba(132,226,255,.22);
+      box-shadow:0 0 18px rgba(99,169,255,.08);
+    }
+
+    .node::before{
+      content:"";
+      position:absolute;
+      left:0;top:0;bottom:0;width:2px;
+      background:linear-gradient(180deg, transparent, rgba(255,255,255,.68), transparent);
+      opacity:.38;
+    }
+
+    .node::after{
+      content:"";
+      position:absolute;
+      right:-26px;top:-22px;
+      width:88px;height:88px;
+      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 72%);
+      opacity:.17;
+    }
+
+    .nn{
+      font-family:'Orbitron','JetBrains Mono',monospace;
+      font-size:.75rem;
+      color:#f8fbff;
+      line-height:1.35;
+      margin-bottom:7px;
+    }
+
+    .nt{
+      color:var(--muted);
+      font-size:.72rem;
+      line-height:1.55;
+    }
+
+    .status{
+      display:inline-block;
+      margin-top:8px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      font-family:'JetBrains Mono',monospace;
+      font-size:.60rem;
+      font-weight:700;
+      letter-spacing:.4px;
+    }
+
+    .asis{background:rgba(52,240,178,.14);color:#8effd6}
+    .indev{background:rgba(255,208,110,.14);color:#ffe6a8}
+    .next{background:rgba(99,169,255,.16);color:#addbff}
+    .tobe{background:rgba(182,194,212,.14);color:#dfe8f1}
+
+    /* color groups */
+    .foundation .group-icon{background:var(--cyan);color:var(--cyan)}
+    .delivery .group-icon{background:var(--amber);color:var(--amber)}
+    .runtime .group-icon{background:var(--green);color:var(--green)}
+    .intelligence .group-icon{background:var(--pink);color:var(--pink)}
+    .governance .group-icon{background:#dce8ff;color:#dce8ff}
+
+    .l1{background:linear-gradient(135deg, rgba(46,230,255,.11), rgba(46,230,255,.03)), var(--glass-2)}
+    .l1::before{background:linear-gradient(180deg,#94f8ff,#35deff)} .l1 .layer-title,.l1 .tag{color:#98f6ff}
+
+    .l2{background:linear-gradient(135deg, rgba(146,112,255,.12), rgba(146,112,255,.03)), var(--glass-2)}
+    .l2::before{background:linear-gradient(180deg,#d7bfff,#9270ff)} .l2 .layer-title,.l2 .tag{color:#dac8ff}
+
+    .l3{background:linear-gradient(135deg, rgba(99,169,255,.12), rgba(99,169,255,.03)), var(--glass-2)}
+    .l3::before{background:linear-gradient(180deg,#a4ddff,#63a9ff)} .l3 .layer-title,.l3 .tag{color:#b9e4ff}
+
+    .l4{background:linear-gradient(135deg, rgba(255,208,110,.11), rgba(255,208,110,.03)), var(--glass-2)}
+    .l4::before{background:linear-gradient(180deg,#ffeab0,#ffd06e)} .l4 .layer-title,.l4 .tag{color:#ffe7ab}
+
+    .l5{background:linear-gradient(135deg, rgba(52,240,178,.11), rgba(52,240,178,.03)), var(--glass-2)}
+    .l5::before{background:linear-gradient(180deg,#9dffd9,#34f0b2)} .l5 .layer-title,.l5 .tag{color:#bcffe5}
+
+    .l6{background:linear-gradient(135deg, rgba(255,89,174,.11), rgba(255,89,174,.03)), var(--glass-2)}
+    .l6::before{background:linear-gradient(180deg,#ffbbdf,#ff59ae)} .l6 .layer-title,.l6 .tag{color:#ffc6e4}
+
+    .l7{background:linear-gradient(135deg, rgba(255,119,133,.11), rgba(255,119,133,.03)), var(--glass-2)}
+    .l7::before{background:linear-gradient(180deg,#ffc7cd,#ff7785)} .l7 .layer-title,.l7 .tag{color:#ffd3d8}
+
+    .l8{background:linear-gradient(135deg, rgba(215,228,248,.12), rgba(215,228,248,.03)), var(--glass-2)}
+    .l8::before{background:linear-gradient(180deg,#ffffff,#d7e4f8)} .l8 .layer-title,.l8 .tag{color:#edf5ff}
+
+    .footer{
+      text-align:center;
+      margin-top:22px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      color:#7288ac;
+      font-size:.72rem;
+      line-height:1.85;
+      font-family:'JetBrains Mono',monospace;
+    }
+
+    @media (max-width:1300px){
+      .architecture{grid-template-columns:1fr}
+      .rail{position:static}
+      .poster-grid{grid-template-columns:1fr}
+      .nodes{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media (max-width:900px){
+      body{padding:14px}
+      .poster,.rail-card,.group,.layer{border-radius:20px}
+      .poster{padding:22px 18px}
+      .hero-asym{grid-template-columns:1fr}
+      .angle-card.small{transform:none}
+      .stats{grid-template-columns:1fr 1fr}
+      .nodes{grid-template-columns:1fr}
+    }
+
+    @media (max-width:560px){
+      .stats{grid-template-columns:1fr}
+      .title{font-size:1.45rem}
+      .lede{font-size:.84rem}
+      .group-head{grid-template-columns:1fr}
+      .group-desc{text-align:left}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <section class="poster">
+      <div class="poster-grid">
+        <div>
+          <div class="eyebrow">Poster Mode / Premium Layout</div>
+          <h1 class="title">SecForge Global Architecture v4.0</h1>
+          <div class="lede">
+            你前面覺得「太普通」，核心問題不是顏色不夠炫，而是<strong>版面語言太像一般 dashboard</strong>。  
+            這版我直接改成更像<strong>作品集封面 + 架構海報</strong>的排法：更大膽的不對稱、斜切卡片、海報式標題、左側導覽 rail，以及更有節奏感的內容流。
+          </div>
+
+          <div class="signal-row">
+            <div class="signal">Poster-first composition</div>
+            <div class="signal">Asymmetric hero</div>
+            <div class="signal">Angled visual language</div>
+            <div class="signal">Premium portfolio tone</div>
+            <div class="signal">Principal / Distinguished signal</div>
+          </div>
+
+          <div class="hero-asym">
+            <div class="angle-card">
+              <div class="angle-k">Visual Strategy</div>
+              <div class="angle-v">把「架構圖頁面」轉成「高階產品藍圖海報」，讓第一眼先被主視覺吸住，再往下讀結構。</div>
+            </div>
+            <div class="angle-card small">
+              <div class="angle-k">Narrative Focus</div>
+              <div class="angle-v">不是在列技術，而是在講一個 Security Platform 的 operating model。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="poster-side">
+          <div class="diag-panel">
+            <div class="diag-title">System Snapshot</div>
+            <div class="stats">
+              <div class="stat">
+                <div class="num">4.0</div>
+                <div class="cap">全新海報式版面語言</div>
+              </div>
+              <div class="stat">
+                <div class="num">5</div>
+                <div class="cap">視覺群組，結構更好懂</div>
+              </div>
+              <div class="stat">
+                <div class="num">8</div>
+                <div class="cap">核心 layer 完整保留</div>
+              </div>
+              <div class="stat">
+                <div class="num">P+</div>
+                <div class="cap">更接近高階作品集展示</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="diag-panel">
+            <div class="diag-title">Why this feels different</div>
+            <div class="side-list">
+              <div class="side-item"><span class="side-dot"></span>標題更像封面，不像報表標頭</div>
+              <div class="side-item"><span class="side-dot"></span>左 rail 形成導讀感，而不是純 sidebar</div>
+              <div class="side-item"><span class="side-dot"></span>群組與群組之間有明顯章節感</div>
+              <div class="side-item"><span class="side-dot"></span>斜切卡片讓畫面不再過度方正</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="architecture">
+      <aside class="rail">
+        <div class="rail-card">
+          <div class="rail-title">Reading Path</div>
+          <div class="rail-steps">
+            <div class="rail-step"><b>Foundation</b> Experience → Identity → Control</div>
+            <div class="rail-step"><b>Delivery</b> Secure software supply chain</div>
+            <div class="rail-step"><b>Runtime</b> Execution fabric and workers</div>
+            <div class="rail-step"><b>Intelligence</b> Telemetry + data + correlation</div>
+            <div class="rail-step"><b>Governance</b> ISMS, evidence, resilience</div>
+          </div>
+        </div>
+
+        <div class="rail-card">
+          <div class="rail-title">Presentation intent</div>
+          <div class="side-list">
+            <div class="side-item"><span class="side-dot"></span>先抓眼球，再導讀</div>
+            <div class="side-item"><span class="side-dot"></span>更像作品集首頁</div>
+            <div class="side-item"><span class="side-dot"></span>不是傳統企業報告感</div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main">
+
+        <div class="group foundation">
+          <div class="group-head">
+            <div class="group-title"><span class="group-icon"></span>Foundation &amp; Control</div>
+            <div class="group-desc">Entry, identity, policy, orchestration backbone</div>
+          </div>
+          <div class="flow">
+            <div class="layer l1">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L1 — Experience Layer</div>
+                  <div class="layer-sub">Persona-oriented entry layer</div>
+                </div>
+                <div class="tag">Web / Admin / Audit / Executive</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">Office Portal</div><div class="nt">Django 5.x + Tailwind CSS · unified entry / BFF</div><div class="status asis">AS-IS</div></div>
+                <div class="node"><div class="nn">Admin Console</div><div class="nt">Module control, governance, platform operations</div><div class="status indev">IN-DEV</div></div>
+                <div class="node"><div class="nn">Auditor Console</div><div class="nt">Evidence sampling, traceability, CAPA follow-up</div><div class="status next">NEXT</div></div>
+                <div class="node"><div class="nn">Executive Dashboard</div><div class="nt">KPI, KRI, risk heatmap, posture view</div><div class="status next">NEXT</div></div>
+              </div>
+            </div>
+
+            <div class="connector"></div>
+
+            <div class="layer l2">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L2 — Identity &amp; Policy Layer</div>
+                  <div class="layer-sub">Trust, access, authorization, isolation</div>
+                </div>
+                <div class="tag">SSO / MFA / RBAC / ABAC / OPA</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">Auth Service</div><div class="nt">OIDC / OAuth2 / JWT / MFA / session hardening</div><div class="status indev">UPGRADING</div></div>
+                <div class="node"><div class="nn">RBAC / ABAC</div><div class="nt">Role + attribute-based authorization across domains</div><div class="status next">NEXT</div></div>
+                <div class="node"><div class="nn">Policy Engine</div><div class="nt">OPA rules for access, approval, data controls</div><div class="status tobe">TO-BE</div></div>
+                <div class="node"><div class="nn">Tenant Isolation</div><div class="nt">Namespace, department, environment separation</div><div class="status tobe">TO-BE</div></div>
+              </div>
+            </div>
+
+            <div class="connector"></div>
+
+            <div class="layer l3">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L3 — Control Plane</div>
+                  <div class="layer-sub">Workflow, asset, risk, evidence, case</div>
+                </div>
+                <div class="tag">Governance brain</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">Workflow Engine</div><div class="nt">Approval, remediation, exception, audit orchestration</div><div class="status indev">IN-DEV</div></div>
+                <div class="node"><div class="nn">Asset Registry</div><div class="nt">System, API, app, endpoint, owner relationships</div><div class="status next">NEXT</div></div>
+                <div class="node"><div class="nn">Risk Register</div><div class="nt">Risk scoring, treatment plan, acceptance tracking</div><div class="status asis">AS-IS+</div></div>
+                <div class="node"><div class="nn">Evidence Manager</div><div class="nt">Collection, chain-of-custody, audit-ready lifecycle</div><div class="status next">NEXT</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group delivery">
+          <div class="group-head">
+            <div class="group-title"><span class="group-icon"></span>Secure Delivery</div>
+            <div class="group-desc">Software supply chain and validation gate</div>
+          </div>
+          <div class="flow">
+            <div class="layer l4">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L4 — DevSecOps &amp; Supply Chain</div>
+                  <div class="layer-sub">Secure software delivery</div>
+                </div>
+                <div class="tag">CI/CD / SAST / DAST / SCA / SBOM</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">CI/CD Pipeline</div><div class="nt">GitHub Actions, quality gates, automated deployment</div><div class="status indev">PARTIAL</div></div>
+                <div class="node"><div class="nn">AppSec Scanning</div><div class="nt">Semgrep, Nuclei, ZAP, API test orchestration</div><div class="status indev">PARTIAL</div></div>
+                <div class="node"><div class="nn">Supply Chain Security</div><div class="nt">SCA, SBOM, image scan, provenance, signing</div><div class="status tobe">TO-BE</div></div>
+                <div class="node"><div class="nn">IaC &amp; Secret Scanning</div><div class="nt">Checkov, tfsec, Gitleaks, baseline validation</div><div class="status tobe">TO-BE</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group runtime">
+          <div class="group-head">
+            <div class="group-title"><span class="group-icon"></span>Runtime &amp; Execution</div>
+            <div class="group-desc">Scalable worker fabric and compute orchestration</div>
+          </div>
+          <div class="flow">
+            <div class="layer l5">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L5 — Execution Fabric</div>
+                  <div class="layer-sub">Security compute fabric</div>
+                </div>
+                <div class="tag">Queue-based / isolated / scalable</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">Scanner Workers</div><div class="nt">Go / Rust / containerized tools / isolated runtime</div><div class="status tobe">TO-BE</div></div>
+                <div class="node"><div class="nn">Analysis Workers</div><div class="nt">Parsing, enrichment, triage, correlation prep</div><div class="status asis">AS-IS</div></div>
+                <div class="node"><div class="nn">Report Workers</div><div class="nt">DOCX / PDF / XLSX / executive and audit outputs</div><div class="status asis">AS-IS</div></div>
+                <div class="node"><div class="nn">AI / Research Workers</div><div class="nt">Reasoning, recommendation, quantum lab sandbox</div><div class="status tobe">TO-BE</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group intelligence">
+          <div class="group-head">
+            <div class="group-title"><span class="group-icon"></span>Security Intelligence</div>
+            <div class="group-desc">Signals, telemetry, analytics, data foundation</div>
+          </div>
+          <div class="flow">
+            <div class="layer l6">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L6 — Telemetry &amp; Detection</div>
+                  <div class="layer-sub">Observability, detection, correlation</div>
+                </div>
+                <div class="tag">Logs / Metrics / Traces / Alerts</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">Log Ingestion</div><div class="nt">FW, app, API, endpoint, audit log normalization</div><div class="status next">NEXT</div></div>
+                <div class="node"><div class="nn">Observability Stack</div><div class="nt">Prometheus, Grafana, OpenTelemetry, Loki/OpenSearch</div><div class="status tobe">TO-BE</div></div>
+                <div class="node"><div class="nn">Detection Engine</div><div class="nt">Detection-as-code, routing, enrichment triggers</div><div class="status tobe">TO-BE</div></div>
+                <div class="node"><div class="nn">Correlation Pipeline</div><div class="nt">Asset + risk + vuln + evidence signal linkage</div><div class="status tobe">TO-BE</div></div>
+              </div>
+            </div>
+
+            <div class="connector"></div>
+
+            <div class="layer l7">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L7 — Security Data &amp; Knowledge</div>
+                  <div class="layer-sub">Operational + analytical + knowledge foundation</div>
+                </div>
+                <div class="tag">DB / Search / Object / Vault</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">Operational DB</div><div class="nt">PostgreSQL / MySQL / platform transaction state</div><div class="status asis">AS-IS</div></div>
+                <div class="node"><div class="nn">Search &amp; Analytics</div><div class="nt">OpenSearch / Elasticsearch / evidence retrieval</div><div class="status next">NEXT</div></div>
+                <div class="node"><div class="nn">Object &amp; Evidence Vault</div><div class="nt">S3, report artifacts, screenshots, evidence bundles</div><div class="status asis">AS-IS+</div></div>
+                <div class="node"><div class="nn">Secrets &amp; Knowledge Store</div><div class="nt">Vault, control mapping, playbooks, model metadata</div><div class="status tobe">TO-BE</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group governance">
+          <div class="group-head">
+            <div class="group-title"><span class="group-icon"></span>Governance &amp; Assurance</div>
+            <div class="group-desc">Auditability, resilience, compliance traceability</div>
+          </div>
+          <div class="flow">
+            <div class="layer l8">
+              <div class="layer-head">
+                <div>
+                  <div class="layer-title">L8 — Governance, Compliance &amp; Trust</div>
+                  <div class="layer-sub">Auditability, recoverability, accountability</div>
+                </div>
+                <div class="tag">ISO 27001 / Evidence / Resilience</div>
+              </div>
+              <div class="nodes">
+                <div class="node"><div class="nn">ISMS Automation</div><div class="nt">ISO 27001 controls, reminders, ownership, review cadence</div><div class="status indev">P1~P3</div></div>
+                <div class="node"><div class="nn">Compliance Mapping</div><div class="nt">Annex A, policy-to-control, evidence-to-control traceability</div><div class="status next">NEXT</div></div>
+                <div class="node"><div class="nn">Audit Trail</div><div class="nt">Immutable records, action trace, evidence lineage</div><div class="status tobe">TO-BE</div></div>
+                <div class="node"><div class="nn">BCP / DR Readiness</div><div class="nt">Backup verification, recovery drill, resilience posture</div><div class="status tobe">TO-BE</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      SecForge v4.0 Poster Mode · redesigned to feel less “ordinary dashboard” and more like a premium portfolio architecture poster
+    </footer>
+  </div>
+</body>
+</html>
